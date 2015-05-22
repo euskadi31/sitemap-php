@@ -31,7 +31,7 @@ class SitemapIndex extends AbstractWriter implements SitemapIndexInterface
     {
         $this->sitemaps->enqueue([
             'loc'       => $loc,
-            'lastmod'   => is_null($lastmod) ? null : $lastmod->format(DateTime::ISO8601)
+            'lastmod'   => is_null($lastmod) ? null : $lastmod->format(DateTime::RFC3339)
         ]);
 
         return $this;

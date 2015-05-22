@@ -39,7 +39,7 @@ class Sitemap extends AbstractWriter implements SitemapInterface
     {
         $this->urls->enqueue([
             'loc'           => $loc,
-            'lastmod'       => is_null($lastmod) ? null : $lastmod->format(DateTime::ISO8601),
+            'lastmod'       => is_null($lastmod) ? null : $lastmod->format(DateTime::RFC3339),
             'changefreq'    => $changefreq,
             'priority'      => $priority
         ]);
