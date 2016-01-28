@@ -25,5 +25,5 @@ interface SitemapInterface
      * @param string   $changefreq  How frequently the page is likely to change.
      * @param float    $priority    The priority of this URL relative to other URLs on your site.
      */
-    public function addUrl($loc, DateTime $lastmod = null, $changefreq = null, $priority = 0.5);
+    public function addUrl($loc, DateTime $lastmod = null, $changefreq = null, $priority = 0.5, array $options = []);
 }
