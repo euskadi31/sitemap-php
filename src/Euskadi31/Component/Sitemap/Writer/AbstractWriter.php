@@ -26,6 +26,11 @@ abstract class AbstractWriter implements WriterInterface
     protected $compression = false;
 
     /**
+     * @var array
+     */
+    protected $extensions = [];
+
+    /**
      * Set compression
      *
      * @param bool $compression
@@ -78,5 +83,17 @@ abstract class AbstractWriter implements WriterInterface
         }
 
         return $content;
+    }
+
+    public function addExtension(SitemapExtensionInterface $extension)
+    {
+        $this->extensions[] = $extension;
+
+        return $this;
+    }
+
+    public function getExtensions()
+    {
+        return $this->extensions;
     }
 }

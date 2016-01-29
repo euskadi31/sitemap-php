@@ -14,6 +14,7 @@
 namespace Euskadi31\Component\Sitemap\Tests\Writer;
 
 use Euskadi31\Component\Sitemap\Writer\Sitemap;
+use Euskadi31\Component\Sitemap\Extension\ImageSitemapExtension;
 use DateTime;
 
 class SitemapTest extends \PHPUnit_Framework_TestCase
@@ -97,5 +98,56 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
             gzencode(file_get_contents(__DIR__ . '/../_files/sitemap.xml'), 9),
             $writer->render()
         );
+    }
+
+    public function testRenderWithExtensions()
+    {
+        $writer = new Sitemap();
+
+        $writer->addExtension(new ImageSitemapExtension());
+
+        $writer->addUrl('https://www.domain.tld/my/page1.html');
+
+        $writer->addUrl(
+            'https://www.domain.tld/my/page2.html',
+            new DateTime('2015-03-09 18:00:00'),
+            null,
+            0.5,
+            [
+                'image' => [
+                    'loc' => 'https://www.domain.tld/my/image2.png'
+                ]
+            ]
+        );
+
+        $writer->addUrl(
+            'https://www.domain.tld/my/page3.html',
+            new DateTime('2015-03-09 18:01:00'),
+            Sitemap::CHANGEFREQ_DAILY,
+            0.5,
+            [
+                'image' => [
+                    'loc' => 'https://www.domain.tld/my/image3.png'
+                ]
+            ]
+        );
+
+        $writer->addUrl(
+            'https://www.domain.tld/my/page4.html',
+            new DateTime('2015-03-09 18:02:00'),
+            Sitemap::CHANGEFREQ_HOURLY,
+            0.8,
+            [
+                'image' => [
+                    'loc' => 'https://www.domain.tld/my/image4.png'
+                ]
+            ]
+        );
+
+        $this->assertEquals(
+            file_get_contents(__DIR__ . '/../_files/sitemap_extensions.xml'),
+            $writer->render()
+        );
+        $this->assertEquals(1, count($writer->getExtensions()));
     }
 }

@@ -35,14 +35,14 @@ class Sitemap extends AbstractWriter implements SitemapInterface
         $this->urls->setIteratorMode(SplQueue::IT_MODE_DELETE);
     }
 
-    public function addUrl($loc, DateTime $lastmod = null, $changefreq = null, $priority = 0.5)
+    public function addUrl($loc, DateTime $lastmod = null, $changefreq = null, $priority = 0.5, array $options = [])
     {
-        $this->urls->enqueue([
+        $this->urls->enqueue(array_merge([
             'loc'           => $loc,
             'lastmod'       => is_null($lastmod) ? null : $lastmod->format(DateTime::RFC3339),
             'changefreq'    => $changefreq,
             'priority'      => $priority
-        ]);
+        ], $options));
 
         return $this;
     }
@@ -64,6 +64,10 @@ class Sitemap extends AbstractWriter implements SitemapInterface
             'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'
         );
 
+        foreach ($this->extensions as $extension) {
+            $extension->applyUrlset($xml);
+        }
+
         foreach ($this->urls as $url) {
 
             $xml->startElement('url');
@@ -79,6 +83,10 @@ class Sitemap extends AbstractWriter implements SitemapInterface
             }
 
             $xml->writeElement('priority', $url['priority']);
+
+            foreach ($this->extensions as $extension) {
+                $extension->applyUrl($xml, $url);
+            }
 
             $xml->endElement(); // url
         }
